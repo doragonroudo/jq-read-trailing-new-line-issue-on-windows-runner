@@ -1,0 +1,45 @@
+name: "Trailing new-line issue"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, windows-2022]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: "jq + read"
+      shell: bash
+      run: |
+        echo "======= print versions ======="
+        bash --version
+        jq --version
+
+        echo "======= echo / read ======="
+
+        echo "hello" |
+        while read -r line; do
+          echo "=$line="
+        done
+
+        echo "======= jq / read ======="
+
+        echo '[{"name": "foo"}, {"name": "bar"}]' |
+        jq -r '.[].name' |
+        while read -r line; do
+          echo "=$line="
+        done
+
+        echo "======= jq / read / parameter expansion ======="
+
+        echo '[{"name": "foo"}, {"name": "bar"}]' |
+        jq -r '.[].name' |
+        while read -r line; do
+          echo "=${line//[$'\t\r\n']}="
+        done
