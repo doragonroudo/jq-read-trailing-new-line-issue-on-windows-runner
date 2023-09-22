@@ -1,0 +1,1 @@
+# jq-read-trailing-new-line-issue-on-windows-runner
